@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100..900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    width: 1024px;
+    height: 512px;
+    overflow: hidden;
+    background: transparent !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    font-family: "Noto Sans KR", sans-serif;
+    letter-spacing: -1.6px;
+    font-weight: 800;
+    font-size: 24px;
+    color: white;
+}
+
+.nametag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 8px;
+}
+
+/* Head image */
+.head-img {
+    display: none;
+    width: 320px;
+    height: auto;
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    margin-bottom: -10px;
+}
+
+/* Chat bubble */
+.chat-bubble {
+    display: none;
+    max-width: 400px;
+    width: max-content;
+    padding: 16px 30px;
+    margin-bottom: 10px;
+    text-align: center;
+    word-break: break-all;
+    font: 800 28px "Noto Sans KR";
+    color: #fff;
+    background: rgba(15, 15, 15, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.1);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 250ms, transform 250ms;
+}
+
+.chat-bubble.drawing-mode {
+    padding: 10px;
+    max-width: 230px;
+}
+
+.chat-bubble .drawing-img {
+    display: block;
+    width: 200px;
+    height: 150px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* Dice container */
+.dice-container {
+    display: none;
+    width: max-content;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    text-align: center;
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.7));
+}
+
+.dice-container .dice-img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+.dice-container.rolling .dice-img {
+    animation: diceShake 0.1s ease-in-out infinite;
+}
+
+.dice-container.final .dice-img {
+    width: 64px;
+    height: 64px;
+    animation: none;
+    filter: drop-shadow(4px 6px 8px rgba(0, 0, 0, 0.8));
+}
+
+@keyframes diceShake {
+    0%, 100% { transform: rotate(-5deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.05); }
+}
+
+/* Fishing result */
+.fishing-result {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 16px 30px;
+    max-width: 400px;
+    background: linear-gradient(135deg, rgba(10,10,10,0.9) 0%, rgba(30,30,30,0.8) 50%, rgba(10,10,10,0.9) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.1);
+    opacity: 1;
+    transition: opacity 0.2s ease-out;
+}
+
+.fishing-result .fish-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fishing-result .fish-icon-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.fishing-result .fish-icon-img.junk { opacity: 0.6; }
+
+.fishing-result .fish-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    width: 100%;
+}
+
+.fishing-result .fish-title {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.fishing-result .fish-rarity {
+    font-size: 20px;
+    font-weight: 900;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+.fishing-result .fish-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: rgba(255,255,255,1);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+.fishing-result .fish-size {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+.fishing-result .fish-exp {
+    font-size: 20px;
+    font-weight: 800;
+    color: rgba(100,230,100,1);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+/* Rarity colors */
+.fishing-result.junk .fish-rarity { color: rgba(160,160,160,1); }
+.fishing-result.common .fish-rarity { color: rgba(220,220,220,1); }
+.fishing-result.uncommon .fish-rarity { color: rgba(120,255,120,1); }
+.fishing-result.rare .fish-rarity { color: rgba(120,180,255,1); }
+.fishing-result.epic .fish-rarity { color: rgba(200,140,255,1); }
+.fishing-result.legendary .fish-rarity { color: rgba(255,215,0,1); }
+
+/* Emoji row */
+.emoji-row {
+    display: none;
+    width: max-content;
+    margin: 0 auto;
+    color: rgb(255, 194, 61);
+    padding: 8px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+/* Title row */
+.title-row {
+    display: none;
+    width: max-content;
+    margin: 0 auto;
+    color: rgb(255, 153, 0) !important;
+    font-weight: 900;
+    font-size: 22px;
+    padding: 4px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+/* Job + Name row */
+.job-name-row {
+    display: none;
+    width: max-content;
+    margin: 0 auto;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 1px -1px 3px rgba(0,0,0,0.9), -1px 1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+}
+
+.job-text {
+    display: inline-block;
+    margin-top: 2px;
+    color: rgba(255, 255, 255, 1);
+    font-size: 22px;
+    padding: 4px 12px;
+    text-align: center;
+    vertical-align: middle;
+    border-top: 2px solid rgba(255, 255, 255, 0.25);
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+    border-radius: 8px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9), -1px -1px 3px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
+    font-weight: 800;
+    margin-right: 6px;
+}
+
+.name-text {
+    display: inline-block;
+    vertical-align: middle;
+}
+</style>
+</head>
+<body>
+<div class="nametag">
+    <img class="head-img" id="headImg" />
+    <div class="fishing-result" id="fishingResult"></div>
+    <div class="chat-bubble" id="chatBubble"></div>
+    <div class="dice-container" id="diceContainer"><img class="dice-img" id="diceImg" /></div>
+    <div class="emoji-row" id="emojiRow"></div>
+    <div class="title-row" id="titleRow"></div>
+    <div class="job-name-row" id="jobNameRow"></div>
+</div>
+
+<script>
+(function() {
+    var headImg = document.getElementById('headImg');
+    var chatBubble = document.getElementById('chatBubble');
+    var diceContainer = document.getElementById('diceContainer');
+    var diceImg = document.getElementById('diceImg');
+    var emojiRow = document.getElementById('emojiRow');
+    var titleRow = document.getElementById('titleRow');
+    var jobNameRow = document.getElementById('jobNameRow');
+    var fishingResult = document.getElementById('fishingResult');
+
+    var chatTimer = null;
+    var chatFadeTimer = null;
+    var diceTimer = null;
+    var diceHideTimer = null;
+    var fishTimer = null;
+    var fishFadeTimer = null;
+    var drawingTimer = null;
+    var drawingFadeTimer = null;
+
+    var diceImages = {
+        1: "https://cdn.dolp.kr/hud/dice-six-faces-one.svg",
+        2: "https://cdn.dolp.kr/hud/dice-six-faces-two.svg",
+        3: "https://cdn.dolp.kr/hud/dice-six-faces-three.svg",
+        4: "https://cdn.dolp.kr/hud/dice-six-faces-four.svg",
+        5: "https://cdn.dolp.kr/hud/dice-six-faces-five.svg",
+        6: "https://cdn.dolp.kr/hud/dice-six-faces-six.svg"
+    };
+
+    var rarityTexts = {
+        'common': '\uC77C\uBC18',
+        'uncommon': '\uACE0\uAE09',
+        'rare': '\uD76C\uADC0',
+        'epic': '\uC601\uC6C5',
+        'legendary': '\uC804\uC124'
+    };
+
+    function removeEmoji(str) {
+        if (!str) return '';
+        return str.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{1FB00}-\u{1FBFF}\u{1F004}-\u{1F0CF}\u{1F170}-\u{1F251}\u{200D}\u{FE0F}]/gu, '');
+    }
+
+    function clearAll() {
+        headImg.style.display = 'none';
+        headImg.removeAttribute('src');
+
+        chatBubble.style.display = 'none';
+        chatBubble.textContent = '';
+        chatBubble.classList.remove('drawing-mode');
+        if (chatTimer) { clearTimeout(chatTimer); chatTimer = null; }
+        if (chatFadeTimer) { clearTimeout(chatFadeTimer); chatFadeTimer = null; }
+
+        diceContainer.style.display = 'none';
+        diceContainer.className = 'dice-container';
+        if (diceTimer) { clearInterval(diceTimer); diceTimer = null; }
+        if (diceHideTimer) { clearTimeout(diceHideTimer); diceHideTimer = null; }
+
+        fishingResult.style.display = 'none';
+        fishingResult.innerHTML = '';
+        fishingResult.className = 'fishing-result';
+        if (fishTimer) { clearTimeout(fishTimer); fishTimer = null; }
+        if (fishFadeTimer) { clearTimeout(fishFadeTimer); fishFadeTimer = null; }
+
+        if (drawingTimer) { clearTimeout(drawingTimer); drawingTimer = null; }
+        if (drawingFadeTimer) { clearTimeout(drawingFadeTimer); drawingFadeTimer = null; }
+
+        emojiRow.style.display = 'none';
+        emojiRow.textContent = '';
+
+        titleRow.style.display = 'none';
+        titleRow.textContent = '';
+
+        jobNameRow.style.display = 'none';
+        jobNameRow.innerHTML = '';
+    }
+
+    function handleUpdate(d) {
+        var showName = d.showName !== false;
+        var showJob = d.showJob !== false;
+        var showTitle = d.showTitle !== false;
+        var showEmoji = d.showEmoji !== false;
+        var showChat = d.showChat !== false;
+        var showHeadImg = d.showHeadImg !== false;
+
+        // Head image (거리 기반 스케일링)
+        var imgClose = d.imgClose !== false;
+        var imgScale = d.imgScale || 1;
+        if (d.img && showHeadImg && imgClose) {
+            var imgSrc = d.img;
+            if (imgSrc.indexOf('http') !== 0) {
+                imgSrc = 'nui://' + window.location.hostname + '/nui/img/' + imgSrc + '.png';
+            }
+            if (headImg.getAttribute('src') !== imgSrc) {
+                headImg.src = imgSrc;
+            }
+            headImg.style.width = Math.round(320 * imgScale) + 'px';
+            headImg.style.display = 'block';
+        } else {
+            headImg.style.display = 'none';
+        }
+
+        // Chat
+        if (d.chatMsg && d.chatMsg !== '' && showChat) {
+            if (chatTimer) { clearTimeout(chatTimer); chatTimer = null; }
+            if (chatFadeTimer) { clearTimeout(chatFadeTimer); chatFadeTimer = null; }
+
+            chatBubble.classList.remove('drawing-mode');
+            chatBubble.textContent = d.chatMsg;
+            chatBubble.style.display = 'block';
+            chatBubble.style.opacity = '1';
+            chatBubble.style.transform = 'scale(1)';
+
+            chatTimer = setTimeout(function() {
+                chatBubble.style.opacity = '0';
+                chatBubble.style.transform = 'scale(0.5)';
+                chatFadeTimer = setTimeout(function() {
+                    chatBubble.textContent = '';
+                    chatBubble.style.display = 'none';
+                    chatTimer = null;
+                    chatFadeTimer = null;
+                }, 250);
+            }, 10000);
+        }
+
+        // Emoji
+        if (d.emoji && showEmoji) {
+            emojiRow.textContent = d.emoji;
+            emojiRow.style.display = 'block';
+        } else {
+            emojiRow.style.display = 'none';
+        }
+
+        // Title
+        if (d.title && showTitle) {
+            titleRow.textContent = d.title;
+            titleRow.style.color = d.titleColor ? 'rgb(' + d.titleColor + ')' : 'rgb(255, 215, 0)';
+            titleRow.style.display = 'block';
+        } else {
+            titleRow.style.display = 'none';
+        }
+
+        // Job + Name
+        var playerName = d.name ? removeEmoji(d.name) + ' ( ' + (d.user_id || '') + ' )' : '';
+        var html = '';
+
+        if (d.job && showJob) {
+            var r = 30, g = 30, b = 30;
+            if (d.color) {
+                var parts = d.color.split(',');
+                if (parts.length >= 3) {
+                    r = parseInt(parts[0].trim());
+                    g = parseInt(parts[1].trim());
+                    b = parseInt(parts[2].trim());
+                }
+            }
+            var jobBg = 'linear-gradient(180deg, rgba(' + r + ',' + g + ',' + b + ',1) 0%, rgba(' + r + ',' + g + ',' + b + ',0.95) 60%, rgba(' + r + ',' + g + ',' + b + ',0.5) 100%)';
+            html = '<span class="job-text" style="background:' + jobBg + '">' + d.job + '</span>';
+            if (showName && playerName) {
+                html += ' <span class="name-text">' + playerName + '</span>';
+            }
+        } else if (showName && playerName) {
+            html = '<span class="name-text">' + playerName + '</span>';
+        }
+
+        if (html) {
+            jobNameRow.innerHTML = html;
+            jobNameRow.style.display = 'block';
+        } else {
+            jobNameRow.style.display = 'none';
+        }
+
+        // Talk state - color the name text
+        var nameEl = jobNameRow.querySelector('.name-text');
+        if (nameEl) {
+            nameEl.style.color = d.talkState ? 'rgb(0, 217, 255)' : '';
+        }
+    }
+
+    function handleStartDice(d) {
+        var finalResult = d.finalResult;
+
+        // Clear previous dice timers
+        if (diceTimer) { clearInterval(diceTimer); diceTimer = null; }
+        if (diceHideTimer) { clearTimeout(diceHideTimer); diceHideTimer = null; }
+
+        diceContainer.style.display = 'block';
+        diceContainer.className = 'dice-container rolling';
+        diceImg.src = diceImages[Math.floor(Math.random() * 6) + 1];
+
+        // Rolling animation: change image every 100ms for 2 seconds
+        var rollCount = 0;
+        diceTimer = setInterval(function() {
+            rollCount++;
+            diceImg.src = diceImages[Math.floor(Math.random() * 6) + 1];
+            if (rollCount >= 20) {
+                clearInterval(diceTimer);
+                diceTimer = null;
+                // Show final result
+                diceContainer.className = 'dice-container final';
+                diceImg.src = diceImages[finalResult];
+            }
+        }, 100);
+
+        // Hide after 5 seconds total (2s roll + 3s result)
+        diceHideTimer = setTimeout(function() {
+            diceContainer.style.display = 'none';
+            diceContainer.className = 'dice-container';
+            diceHideTimer = null;
+        }, 5000);
+    }
+
+    function handleHideDice() {
+        if (diceTimer) { clearInterval(diceTimer); diceTimer = null; }
+        if (diceHideTimer) { clearTimeout(diceHideTimer); diceHideTimer = null; }
+        diceContainer.style.display = 'none';
+        diceContainer.className = 'dice-container';
+    }
+
+    function handleShowFishing(d) {
+        if (fishTimer) { clearTimeout(fishTimer); fishTimer = null; }
+        if (fishFadeTimer) { clearTimeout(fishFadeTimer); fishFadeTimer = null; }
+
+        var rarityClass = d.isJunk ? 'junk' : (d.rarity || 'common');
+        var rarityText = d.isJunk ? '\uC4F0\uB808\uAE30' : (rarityTexts[d.rarity] || '\uC77C\uBC18');
+
+        var iconHTML = '';
+        if (d.icon) {
+            var iconSrc = d.icon;
+            if (iconSrc.indexOf('http://') !== 0 && iconSrc.indexOf('https://') !== 0) {
+                iconSrc = 'nui://DolphinFishing/nui/icons/' + iconSrc;
+            }
+            iconHTML = '<div class="fish-icon-wrapper"><img src="' + iconSrc + '" class="fish-icon-img' + (d.isJunk ? ' junk' : '') + '" onerror="this.parentElement.style.display=\'none\';" /></div>';
+        }
+
+        fishingResult.className = 'fishing-result ' + rarityClass;
+        fishingResult.innerHTML =
+            iconHTML +
+            '<div class="fish-info">' +
+                '<span class="fish-title">' +
+                    '<span class="fish-rarity">' + rarityText + '</span> ' +
+                    '<span class="fish-name">' + (d.name || '???') + '</span>' +
+                '</span>' +
+                (d.size ? '<span class="fish-size">' + d.size + '</span>' : '') +
+                (d.exp ? '<span class="fish-exp">+' + d.exp + ' EXP</span>' : '') +
+            '</div>';
+        fishingResult.style.display = 'flex';
+        fishingResult.style.opacity = '1';
+
+        fishTimer = setTimeout(function() {
+            fishingResult.style.opacity = '0';
+            fishFadeTimer = setTimeout(function() {
+                fishingResult.style.display = 'none';
+                fishingResult.innerHTML = '';
+                fishingResult.className = 'fishing-result';
+                fishTimer = null;
+                fishFadeTimer = null;
+            }, 300);
+        }, 5000);
+    }
+
+    function handleShowDrawing(d) {
+        if (chatTimer) { clearTimeout(chatTimer); chatTimer = null; }
+        if (chatFadeTimer) { clearTimeout(chatFadeTimer); chatFadeTimer = null; }
+        if (drawingTimer) { clearTimeout(drawingTimer); drawingTimer = null; }
+        if (drawingFadeTimer) { clearTimeout(drawingFadeTimer); drawingFadeTimer = null; }
+
+        chatBubble.innerHTML = '<img src="' + d.imageData + '" class="drawing-img" />';
+        chatBubble.classList.add('drawing-mode');
+        chatBubble.style.display = 'block';
+        chatBubble.style.opacity = '1';
+        chatBubble.style.transform = 'scale(1)';
+
+        drawingTimer = setTimeout(function() {
+            chatBubble.style.opacity = '0';
+            chatBubble.style.transform = 'scale(0.6)';
+            drawingFadeTimer = setTimeout(function() {
+                chatBubble.innerHTML = '';
+                chatBubble.classList.remove('drawing-mode');
+                chatBubble.style.display = 'none';
+                drawingTimer = null;
+                drawingFadeTimer = null;
+            }, 300);
+        }, 8000);
+    }
+
+    window.addEventListener('message', function(event) {
+        var d = event.data;
+        if (typeof d === 'string') {
+            try { d = JSON.parse(d); } catch(e) { return; }
+        }
+        if (!d || !d.type) return;
+
+        switch (d.type) {
+            case 'update':
+                handleUpdate(d);
+                break;
+            case 'clear':
+                clearAll();
+                break;
+            case 'startDice':
+                handleStartDice(d);
+                break;
+            case 'hideDice':
+                handleHideDice();
+                break;
+            case 'showFishing':
+                handleShowFishing(d);
+                break;
+            case 'showDrawing':
+                handleShowDrawing(d);
+                break;
+        }
+    });
+
+    // JS 로딩 완료 -> Lua에 ready 신호 전송
+    var params = new URLSearchParams(window.location.search);
+    var resourceName = params.get('resourceName') || window.location.hostname;
+    fetch('https://cfx-nui-' + resourceName + '/duiReady', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '{}'
+    }).catch(function() {});
+})();
+</script>
+</body>
+</html>

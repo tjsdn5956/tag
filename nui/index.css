@@ -1,0 +1,359 @@
+
+@font-face {
+    font-family: 'emj';
+    src: url(./fonts/seguiemj.ttf) format('truetype');
+}
+
+body {
+    font-family: "Noto Sans KR", 'emj';
+    letter-spacing: -0.8px;
+    font-weight: 600;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+.namestyle {
+    position: fixed;
+    transform: translate(-50%,-100%);
+
+    top: 50%;
+    left: 50%;
+
+    width: max-content;
+    height: max-content;
+}
+
+.namestyle > .nickname, .job, .emoji, .title {
+    width: max-content;
+    margin: 0 auto;
+
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8), 1px -1px 1px rgba(0, 0, 0, 0.8), -1px 1px 1px rgba(0, 0, 0, 0.8), -1px -1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.namestyle > .emoji {
+    color: rgb(255, 194, 61);
+    padding: 4px;
+}
+
+.namestyle > .title {
+    color: rgb(255, 153, 0) !important;
+    font-weight: bold;
+    font-size: 11px;
+    padding: 2px;
+}
+
+
+.namestyle .job-text {
+    display: inline-block;
+    margin-top: 1px;
+    color: rgba(255, 255, 255, 1);
+    font-size: 11px;
+    padding: 2px 6px 2px 6px;
+    text-align: center;
+    vertical-align: middle;
+
+    /* 배경은 JS에서 동적으로 설정 (위 진함 → 아래 투명) */
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: none;
+    border-radius: 4px;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.9),
+        0 0 4px rgba(0, 0, 0, 0.5);
+    font-weight: 600;
+    margin-right: 3px;
+}
+
+.namestyle .name-text {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.namestyle > .icon {
+    position: relative;
+
+    width: 180px;
+    height: auto;
+
+    display: block;
+    margin: 0 auto;
+    margin-bottom: -5px;
+
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    transition: width 0.15s ease-out;
+}
+
+.namestyle > .chat-box {
+    position: relative;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 200px;
+    height: max-content;
+    box-sizing: border-box;
+
+    text-align: center;
+    word-break: break-all;
+
+    font: 600 14px "Noto Sans KR";
+
+    padding: 10px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+
+        
+    opacity: 0;
+    transform: scale(0.6);
+    transition: 250ms all;
+}
+
+.namestyle > .chat-box.default {
+    color: #fff;
+    padding: 8px 15px;
+    
+    
+    background: rgba(15, 15, 15, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.namestyle > .chat-box:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 12px solid transparent;
+    border-bottom: 0;
+    margin-left: -12px;
+    margin-bottom: -12px;
+}
+
+/* 주사위 스타일 */
+.namestyle > .dice {
+    width: max-content;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    text-align: center;
+    animation: diceShake 0.1s ease-in-out infinite;
+    filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.7));
+}
+
+.namestyle > .dice .dice-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+.namestyle > .dice.final {
+    animation: diceBounce 0.5s ease-out;
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.8));
+}
+
+.namestyle > .dice.final .dice-img {
+    width: 32px;
+    height: 32px;
+}
+
+@keyframes diceShake {
+    0%, 100% { transform: rotate(-5deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.05); }
+}
+
+@keyframes diceBounce {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* 낚시 결과 UI - 세로 레이아웃 */
+.namestyle > .fishing-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin: 0 auto;
+    margin-bottom: 5px;
+    padding: 8px 15px;
+    width: 100%;
+    max-width: 200px;
+    box-sizing: border-box;
+
+    /* chat-box와 동일한 디자인 */
+    background: linear-gradient(135deg,
+        rgba(10, 10, 10, 0.9) 0%,
+        rgba(30, 30, 30, 0.8) 50%,
+        rgba(10, 10, 10, 0.9) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.namestyle > .fishing-result.fade-out {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+/* 아이콘 */
+.namestyle > .fishing-result .fish-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.namestyle > .fishing-result .fish-icon,
+.namestyle > .fishing-result .fish-icon-fallback {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.namestyle > .fishing-result .fish-icon-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.namestyle > .fishing-result .fish-icon.junk,
+.namestyle > .fishing-result .fish-icon-fallback.junk,
+.namestyle > .fishing-result .fish-icon-img.junk {
+    opacity: 0.6;
+}
+
+/* 정보 영역 */
+.namestyle > .fishing-result .fish-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    width: 100%;
+}
+
+.namestyle > .fishing-result .fish-title {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+
+.namestyle > .fishing-result .fish-rarity {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+    color: var(--rarity-text-color);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8), 1px -1px 1px rgba(0, 0, 0, 0.8), -1px 1px 1px rgba(0, 0, 0, 0.8), -1px -1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.namestyle > .fishing-result .fish-name {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.8px;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8), 1px -1px 1px rgba(0, 0, 0, 0.8), -1px 1px 1px rgba(0, 0, 0, 0.8), -1px -1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.namestyle > .fishing-result .fish-size {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: -0.8px;
+    color: rgba(255, 255, 255, 0.7);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8), 1px -1px 1px rgba(0, 0, 0, 0.8), -1px 1px 1px rgba(0, 0, 0, 0.8), -1px -1px 1px rgba(0, 0, 0, 0.8);
+}
+
+.namestyle > .fishing-result .fish-exp {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: -0.8px;
+    color: rgba(100, 230, 100, 1);
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.8), 1px -1px 1px rgba(0, 0, 0, 0.8), -1px 1px 1px rgba(0, 0, 0, 0.8), -1px -1px 1px rgba(0, 0, 0, 0.8);
+}
+
+/* ===== 희귀도별 스타일 (단순 색상만) ===== */
+
+.namestyle > .fishing-result.junk {
+    --rarity-border-color: rgba(100, 100, 100, 0.6);
+    --rarity-text-color: rgba(160, 160, 160, 1);
+}
+
+.namestyle > .fishing-result.common {
+    --rarity-border-color: rgba(180, 180, 180, 0.6);
+    --rarity-text-color: rgba(220, 220, 220, 1);
+}
+
+.namestyle > .fishing-result.uncommon {
+    --rarity-border-color: rgba(100, 200, 100, 0.6);
+    --rarity-text-color: rgba(120, 255, 120, 1);
+}
+
+.namestyle > .fishing-result.rare {
+    --rarity-border-color: rgba(100, 150, 255, 0.6);
+    --rarity-text-color: rgba(120, 180, 255, 1);
+}
+
+.namestyle > .fishing-result.epic {
+    --rarity-border-color: rgba(180, 100, 255, 0.6);
+    --rarity-text-color: rgba(200, 140, 255, 1);
+}
+
+.namestyle > .fishing-result.legendary {
+    --rarity-border-color: rgba(255, 200, 80, 0.7);
+    --rarity-text-color: rgba(255, 215, 0, 1);
+}
+
+/* 독립 주사위 (DrawText 모드용) */
+.dice-standalone {
+    position: fixed;
+    transform: translate(-50%, -100%);
+    width: max-content;
+    margin: 0 auto;
+    text-align: center;
+    filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.7));
+    z-index: 1000;
+}
+
+.dice-standalone .dice-img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    animation: diceShakeImg 0.1s ease-in-out infinite;
+}
+
+.dice-standalone.final {
+    filter: drop-shadow(2px 3px 4px rgba(0, 0, 0, 0.8));
+}
+
+.dice-standalone.final .dice-img {
+    width: 28px;
+    height: 28px;
+    animation: none;
+}
+
+@keyframes diceShakeImg {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+/* 그림 채팅 (chat-box 내부) */
+.namestyle > .chat-box.drawing-mode {
+    padding: 5px;
+    max-width: 115px;
+}
+
+.namestyle > .chat-box .drawing-img {
+    display: block;
+    width: 100px;
+    height: 75px;
+    object-fit: contain;
+    border-radius: 3px;
+    image-rendering: auto;
+}
